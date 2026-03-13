@@ -90,29 +90,21 @@ saveDefaultsBtn.addEventListener("click", async () => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const payload = collectForm();
+  const draft = buildEmail(payload);
 
-  try {
-    const payload = collectForm();
-    const draft = buildEmail(payload);
-
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab || !tab.id || !tab.url?.includes("mail.google.com")) {
-      setStatus("Open Gmail tab first, then click extension.", true);
-      return;
-    }
-
-    const response = await chrome.tabs.sendMessage(tab.id, { type: "CREATE_GMAIL_DRAFT", payload: draft });
-    if (!response?.ok) {
-      throw new Error(response?.error || "Could not create Gmail draft.");
-    }
-
-    const { settings = DEFAULT_SETTINGS } = await chrome.storage.sync.get("settings");
-    const versionByApp = { ...(settings.versionByApp || {}), [payload.appName]: payload.version };
-    await chrome.storage.sync.set({ settings: { ...settings, versionByApp } });
-    setStatus(`Draft created with version ${payload.version}`);
-  } catch (err) {
-    setStatus(err.message || "Something went wrong while creating draft.", true);
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab || !tab.id || !tab.url?.includes("mail.google.com")) {
+    setStatus("Open Gmail tab first, then click extension.", true);
+    return;
   }
+
+  await chrome.tabs.sendMessage(tab.id, { type: "CREATE_GMAIL_DRAFT", payload: draft });
+
+  const { settings = DEFAULT_SETTINGS } = await chrome.storage.sync.get("settings");
+  const versionByApp = { ...(settings.versionByApp || {}), [payload.appName]: payload.version };
+  await chrome.storage.sync.set({ settings: { ...settings, versionByApp } });
+  setStatus(`Draft created with version ${payload.version}`);
 });
 
 function setStatus(message, isError = false) {

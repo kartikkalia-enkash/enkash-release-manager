@@ -21,18 +21,13 @@ Chrome extension to generate Gmail deployment approval drafts with a consistent 
 4. Select this folder (`enkash-release-manager`)
 5. Pin extension to toolbar
 
-## Exact usage (important)
+## Usage
 
-1. Open Gmail (`https://mail.google.com`) and wait until inbox is fully loaded.
+1. Open Gmail (`https://mail.google.com`) and stay on that tab.
 2. Click extension icon.
-3. Fill fields once and click **Save as defaults** (optional, but recommended).
-4. For each deployment, update reason / merge requests / version and click **Create Gmail draft**.
-5. Gmail compose should open and auto-fill To, Cc, subject, and body.
-
-If not filled:
-- Refresh Gmail tab once.
-- Re-open extension popup and try again.
-- Check popup status message for exact error.
+3. Fill or adjust fields.
+4. Click **Create Gmail draft**.
+5. Review draft and send.
 
 ## Version sync strategy
 
