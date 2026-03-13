@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Release Mail Assistant Settings</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 0 16px; }
+      textarea { width: 100%; min-height: 160px; }
+      button { margin-top: 8px; padding: 8px 12px; }
+      .card { border: 1px solid #e5e7eb; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+      code { background:#f3f4f6; padding:2px 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>Release Mail Assistant - Settings</h1>
+    <div class="card">
+      <h3>Storage strategy for versions</h3>
+      <p>
+        This extension stores defaults and <code>versionByApp</code> in <code>chrome.storage.sync</code>,
+        so each user gets synced values across their own Chrome profile.
+      </p>
+      <p>
+        For team-wide lockstep versions, use a shared backend (Google Sheet API / internal release service) and call it from the extension.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Raw settings JSON</h3>
+      <textarea id="json"></textarea>
+      <br />
+      <button id="save">Save JSON</button>
+      <button id="reset">Reset defaults</button>
+      <p id="status"></p>
+    </div>
+
+    <script src="template.js"></script>
+    <script>
+      const { DEFAULT_SETTINGS } = ReleaseMailTemplate;
+      const jsonEl = document.getElementById('json');
+      const statusEl = document.getElementById('status');
+
+      async function load() {
+        const { settings = DEFAULT_SETTINGS } = await chrome.storage.sync.get('settings');
+        jsonEl.value = JSON.stringify(settings, null, 2);
+      }
+
+      function setStatus(message, err = false) {
+        statusEl.textContent = message;
+        statusEl.style.color = err ? '#b91c1c' : '#166534';
+      }
+
+      document.getElementById('save').addEventListener('click', async () => {
+        try {
+          const parsed = JSON.parse(jsonEl.value);
+          await chrome.storage.sync.set({ settings: parsed });
+          setStatus('Saved successfully.');
+        } catch (e) {
+          setStatus(e.message, true);
+        }
+      });
+
+      document.getElementById('reset').addEventListener('click', async () => {
+        await chrome.storage.sync.set({ settings: DEFAULT_SETTINGS });
+        await load();
+        setStatus('Defaults restored.');
+      });
+
+      load();
+    </script>
+  </body>
+</html>
