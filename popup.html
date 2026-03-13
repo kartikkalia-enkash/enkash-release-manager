@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Release Mail Assistant</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Create Deployment Mail</h1>
+      <form id="mail-form">
+        <div class="grid">
+          <label>To<input name="emailTo" placeholder="approver@company.com" /></label>
+          <label>CC<input name="ccList" placeholder="team@company.com" /></label>
+          <label>Approver name<input name="approverName" required /></label>
+          <label>Application<input name="appName" required /></label>
+          <label>Release type<input name="releaseType" required /></label>
+          <label>Version<input name="version" required /></label>
+          <label>Version bump
+            <select name="versionBump">
+              <option value="none">No bump</option>
+              <option value="patch">Patch +1</option>
+              <option value="minor">Minor +1</option>
+              <option value="major">Major +1</option>
+            </select>
+          </label>
+          <label>Date<input name="date" /></label>
+          <label>Sender name<input name="senderName" /></label>
+          <label>Phone<input name="phone" /></label>
+          <label>Subject prefix<input name="subjectPrefix" /></label>
+          <label>Dev owners<input name="devOwners" /></label>
+          <label>QA owners<input name="qaOwners" /></label>
+        </div>
+
+        <label>Reason of change<textarea name="reason" rows="3"></textarea></label>
+        <label>Merge Requests (one per line)<textarea name="mergeRequests" rows="3"></textarea></label>
+        <label>SQL Queries<textarea name="sqlQueries" rows="2"></textarea></label>
+        <label>Other Remarks<textarea name="otherRemarks" rows="3"></textarea></label>
+
+        <div class="actions">
+          <button type="button" id="save-defaults">Save as defaults</button>
+          <button type="submit">Create Gmail draft</button>
+        </div>
+        <p id="status"></p>
+      </form>
+    </main>
+    <script src="template.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
